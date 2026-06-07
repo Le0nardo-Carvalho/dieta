@@ -1,0 +1,713 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><script data-od-sandbox-shim>(function(){
+  function makeStore(){
+    var data = {};
+    var api = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
+      setItem: function(k, v){ data[k] = String(v); },
+      removeItem: function(k){ delete data[k]; },
+      clear: function(){ data = {}; },
+      key: function(i){ return Object.keys(data)[i] || null; }
+    };
+    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(data).length; } });
+    return api;
+  }
+  function tryShim(name){
+    var works = false;
+    try { works = !!window[name] && typeof window[name].getItem === 'function'; void window[name].length; }
+    catch (_) { works = false; }
+    if (works) return;
+    try { Object.defineProperty(window, name, { configurable: true, value: makeStore() }); }
+    catch (_) { try { window[name] = makeStore(); } catch (__) {} }
+  }
+  tryShim('localStorage');
+  tryShim('sessionStorage');
+})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio Semanal · 08–14 Jun</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --leo: #1a5fa8;
+    --leo-light: #e8f1fb;
+    --leo-mid: #b8d2f0;
+    --lari: #9c3558;
+    --lari-light: #faeef3;
+    --lari-mid: #e8b4c8;
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e4de;
+    --text: #1a1714;
+    --muted: #7a746d;
+    --check: #2d9e6b;
+    --check-bg: #eaf5f0;
+    --amber: #c17d2a;
+    --amber-bg: #fdf3e3;
+    --rose: #c0303a;
+    --rose-bg: #fdedef;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--text);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .header-title em {
+    font-style: italic;
+    opacity: 0.6;
+  }
+  .header-week {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+  .personas {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .persona-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 100px;
+    padding: 6px 14px 6px 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .persona-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .persona-dot.leo { background: var(--leo); }
+  .persona-dot.lari { background: var(--lari); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .progress-item { flex: 1; min-width: 140px; }
+  .progress-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-track {
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-fill.leo { background: #6aaff0; }
+  .progress-fill.lari { background: #e8a0b8; }
+
+  /* NAV DAYS */
+  .nav-wrap {
+    padding: 1.25rem 2rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-wrap::-webkit-scrollbar { display: none; }
+  .nav-days {
+    display: flex;
+    gap: 6px;
+    min-width: max-content;
+  }
+  .day-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    color: var(--muted);
+    position: relative;
+  }
+  .day-tab:hover { border-color: var(--text); color: var(--text); }
+  .day-tab.active {
+    background: var(--text);
+    border-color: var(--text);
+    color: white;
+  }
+  .day-tab .day-dots {
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .day-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .day-dot.leo-done { background: var(--leo); }
+  .day-dot.lari-done { background: var(--lari); }
+  .day-tab.active .day-dot { background: rgba(255,255,255,0.3); }
+  .day-tab.active .day-dot.leo-done { background: #6aaff0; }
+  .day-tab.active .day-dot.lari-done { background: #e8a0b8; }
+
+  /* CONTENT */
+  .content {
+    padding: 1.5rem 2rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* MEAL CARD */
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .meal-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+  .meal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .meal-icon {
+    font-size: 1.4rem;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .meal-info { flex: 1; }
+  .meal-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  .meal-time {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  /* PERSONS GRID */
+  .persons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .person-col {
+    padding: 14px 18px;
+  }
+  .person-col:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .person-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .person-label.leo { color: var(--leo); }
+  .person-label.lari { color: var(--lari); }
+  .person-label-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .leo .person-label-dot { background: var(--leo); }
+  .lari .person-label-dot { background: var(--lari); }
+
+  /* ITEMS */
+  .item-list { list-style: none; margin-bottom: 14px; }
+  .item-list li {
+    font-size: 0.82rem;
+    color: var(--text);
+    padding: 3px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .item-list li::before {
+    content: '·';
+    color: var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 4px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .badge.g { background: var(--check-bg); color: var(--check); }
+  .badge.a { background: var(--amber-bg); color: var(--amber); }
+  .badge.r { background: var(--rose-bg); color: var(--rose); }
+  .badge.p { background: #f0eafd; color: #6b3ab5; }
+  .badge.b { background: var(--leo-light); color: var(--leo); }
+
+  /* CHECK BUTTON */
+  .check-wrap {
+    margin-top: 4px;
+  }
+  .check-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .check-btn:hover {
+    border-color: var(--check);
+    color: var(--check);
+  }
+  .check-btn.done {
+    background: var(--check-bg);
+    border-color: var(--check);
+    color: var(--check);
+  }
+  .check-btn .check-icon {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .check-btn.done .check-icon {
+    background: var(--check);
+    border-color: var(--check);
+    color: white;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 0 2rem 1.25rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .footer-note strong { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .header { padding: 1.5rem 1.25rem 1.25rem; }
+    .nav-wrap { padding: 1rem 1.25rem 0; }
+    .content { padding: 1.25rem 1.25rem 3rem; }
+    .legend { padding: 0 1.25rem 1rem; }
+    .persons-grid { grid-template-columns: 1fr; }
+    .person-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <h1 class="header-title">Cardápio<br><em>Semanal</em></h1>
+    <span class="header-week">08 – 14 Jun 2025</span>
+  </div>
+  <div class="personas">
+    <div class="persona-pill">
+      <span class="persona-dot leo">L</span>
+      Leonardo
+    </div>
+    <div class="persona-pill">
+      <span class="persona-dot lari">L</span>
+      Larissa
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Leonardo</span>
+        <span id="pct-leo">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill leo" id="bar-leo" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Larissa</span>
+        <span id="pct-lari">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill lari" id="bar-lari" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--leo)"></span> Leonardo marcou</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--lari)"></span> Larissa marcou</div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-days" id="nav-days"></div>
+</nav>
+
+<main class="content" id="content"></main>
+
+<script>
+const DAYS = [
+  { label: 'Seg', date: '08', full: 'Segunda · 08 Jun' },
+  { label: 'Ter', date: '09', full: 'Terça · 09 Jun' },
+  { label: 'Qua', date: '10', full: 'Quarta · 10 Jun' },
+  { label: 'Qui', date: '11', full: 'Quinta · 11 Jun' },
+  { label: 'Sex', date: '12', full: 'Sexta · 12 Jun' },
+  { label: 'Sáb', date: '13', full: 'Sábado · 13 Jun' },
+  { label: 'Dom', date: '14', full: 'Domingo · 14 Jun' },
+];
+
+const MEALS = [
+  {
+    id: 'cafe',
+    icon: '☀️',
+    name: 'Café da manhã',
+    time: '~7h · Diário',
+    leo: {
+      items: [
+        'Overnight: iogurte natural + aveia + chia',
+        'Banana fatiada em cima',
+        { text: 'Creatina monohidratada', badge: 'a', badgeText: 'manter' },
+        { text: 'Café preto sem açúcar', badge: 'b', badgeText: '9h–11h ideal' },
+      ]
+    },
+    lari: {
+      items: [
+        '2 torradas integrais',
+        'Queijo Minas fatiado',
+        'Tomate cereja ao lado',
+        { text: 'Café com leite integral', badge: 'a', badgeText: 'moderação' },
+        { text: 'Laranja lima', badge: 'g', badgeText: 'vitamina C · aprovada' },
+      ]
+    }
+  },
+  {
+    id: 'almoco',
+    icon: '🍝',
+    name: 'Almoço',
+    time: '~12h · Molho em lote no domingo',
+    leo: {
+      items: [
+        'Macarrão com molho de carne moída',
+        'Salada: tomate cereja + cenoura + cebolinha',
+        'Fio de azeite',
+      ]
+    },
+    lari: {
+      items: [
+        { text: 'Macarrão com molho de carne moída', badge: 'r', badgeText: 'sem cebola' },
+        'Salada: tomate cereja + cenoura + cebolinha',
+        'Fio de azeite',
+      ]
+    }
+  },
+  {
+    id: 'lanche-tarde',
+    icon: '🥚',
+    name: 'Lanche da tarde',
+    time: '~15h30 · Sólido rápido',
+    leo: {
+      items: [
+        'Torrada integral com queijo Minas',
+        { text: '1 ovo cozido', badge: 'b', badgeText: 'energia + B12' },
+        'Punhado de amendoim',
+        { text: 'Creatina', badge: 'a', badgeText: 'manter' },
+      ]
+    },
+    lari: {
+      items: [
+        'Torrada integral com queijo Minas',
+        { text: '1–2 ovos cozidos', badge: 'g', badgeText: 'colina · lactação' },
+        { text: 'Pera', badge: 'g', badgeText: 'segura · digestão' },
+        { text: 'Aveia seca com mel', badge: 'g', badgeText: 'galactogênico' },
+      ]
+    }
+  },
+  {
+    id: 'lanche-noite',
+    icon: '🌙',
+    name: 'Lanche da noite',
+    time: '~20h · Leve e rápido',
+    leo: {
+      items: [
+        'Pão integral com manteiga',
+        { text: 'Ovo cozido ou mexido', badge: 'b', badgeText: 'proteína noturna' },
+        'Uva ou maçã',
+      ]
+    },
+    lari: {
+      items: [
+        'Pão integral com manteiga',
+        { text: 'Ovo cozido ou mexido', badge: 'b', badgeText: 'proteína noturna' },
+        { text: 'Chá de erva-doce ou camomila', badge: 'g', badgeText: 'anti-cólica bebê' },
+      ]
+    }
+  }
+];
+
+// State: { 'cafe-leo-0': true, ... }
+let state = {};
+try { state = JSON.parse(localStorage.getItem('cardapio-state') || '{}'); } catch(e) {}
+
+function save() {
+  try { localStorage.setItem('cardapio-state', JSON.stringify(state)); } catch(e) {}
+}
+
+function key(dayIdx, mealId, person) {
+  return `${dayIdx}-${mealId}-${person}`;
+}
+
+function renderItems(items) {
+  return items.map(item => {
+    if (typeof item === 'string') return `<li>${item}</li>`;
+    const badge = `<span class="badge ${item.badge}">${item.badgeText}</span>`;
+    return `<li>${item.text}${badge}</li>`;
+  }).join('');
+}
+
+let currentDay = 0;
+
+function renderNav() {
+  const nav = document.getElementById('nav-days');
+  nav.innerHTML = DAYS.map((d, i) => {
+    // compute dots
+    const leoDone = MEALS.filter(m => state[key(i, m.id, 'leo')]).length;
+    const lariDone = MEALS.filter(m => state[key(i, m.id, 'lari')]).length;
+    const dots = MEALS.map((m, mi) => {
+      const ld = state[key(i, m.id, 'leo')] ? 'leo-done' : '';
+      const rd = state[key(i, m.id, 'lari')] ? 'lari-done' : '';
+      return `<span class="day-dot ${ld}" title="Leo ${m.name}"></span><span class="day-dot ${rd}" title="Larissa ${m.name}"></span>`;
+    }).join('');
+    return `
+      <button class="day-tab ${i === currentDay ? 'active' : ''}" onclick="selectDay(${i})">
+        ${d.label} ${d.date}
+        <div class="day-dots">${dots}</div>
+      </button>`;
+  }).join('');
+}
+
+function renderProgress() {
+  const total = DAYS.length * MEALS.length;
+  let leo = 0, lari = 0;
+  DAYS.forEach((_, i) => {
+    MEALS.forEach(m => {
+      if (state[key(i, m.id, 'leo')]) leo++;
+      if (state[key(i, m.id, 'lari')]) lari++;
+    });
+  });
+  const leoPct = Math.round((leo / total) * 100);
+  const lariPct = Math.round((lari / total) * 100);
+  document.getElementById('bar-leo').style.width = leoPct + '%';
+  document.getElementById('pct-leo').textContent = leoPct + '%';
+  document.getElementById('bar-lari').style.width = lariPct + '%';
+  document.getElementById('pct-lari').textContent = lariPct + '%';
+}
+
+function toggleCheck(dayIdx, mealId, person) {
+  const k = key(dayIdx, mealId, person);
+  state[k] = !state[k];
+  save();
+  // update button
+  const btn = document.getElementById(`btn-${k}`);
+  if (btn) {
+    btn.classList.toggle('done', state[k]);
+    btn.querySelector('.check-icon').textContent = state[k] ? '✓' : '';
+    btn.querySelector('.check-label').textContent = state[k] ? 'Refeição realizada!' : 'Marcar como feito';
+  }
+  renderNav();
+  renderProgress();
+}
+
+function renderDay(dayIdx) {
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:1.25rem;color:var(--muted);font-weight:400;">
+      ${DAYS[dayIdx].full}
+    </h2>
+    ${MEALS.map(meal => `
+      <div class="meal-card">
+        <div class="meal-header">
+          <span class="meal-icon">${meal.icon}</span>
+          <div class="meal-info">
+            <div class="meal-name">${meal.name}</div>
+            <div class="meal-time">${meal.time}</div>
+          </div>
+        </div>
+        <div class="persons-grid">
+          <div class="person-col">
+            <div class="person-label leo">
+              <span class="person-label-dot"></span>
+              Leonardo
+            </div>
+            <ul class="item-list">${renderItems(meal.leo.items)}</ul>
+            <div class="check-wrap">
+              <button
+                class="check-btn ${state[key(dayIdx, meal.id, 'leo')] ? 'done' : ''}"
+                id="btn-${key(dayIdx, meal.id, 'leo')}"
+                onclick="toggleCheck(${dayIdx}, '${meal.id}', 'leo')">
+                <span class="check-icon">${state[key(dayIdx, meal.id, 'leo')] ? '✓' : ''}</span>
+                <span class="check-label">${state[key(dayIdx, meal.id, 'leo')] ? 'Refeição realizada!' : 'Marcar como feito'}</span>
+              </button>
+            </div>
+          </div>
+          <div class="person-col">
+            <div class="person-label lari">
+              <span class="person-label-dot"></span>
+              Larissa
+            </div>
+            <ul class="item-list">${renderItems(meal.lari.items)}</ul>
+            <div class="check-wrap">
+              <button
+                class="check-btn ${state[key(dayIdx, meal.id, 'lari')] ? 'done' : ''}"
+                id="btn-${key(dayIdx, meal.id, 'lari')}"
+                onclick="toggleCheck(${dayIdx}, '${meal.id}', 'lari')">
+                <span class="check-icon">${state[key(dayIdx, meal.id, 'lari')] ? '✓' : ''}</span>
+                <span class="check-label">${state[key(dayIdx, meal.id, 'lari')] ? 'Refeição realizada!' : 'Marcar como feito'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+    <div class="footer-note">
+      👩‍⚕️ <strong>Larissa:</strong> mínimo 2,5L de água/dia · chá de erva-doce à noite auxilia nas cólicas do bebê.<br>
+      ⚡ <strong>Leonardo:</strong> café preto entre 9h–11h e 13h–15h para melhor efeito na energia.
+    </div>
+  `;
+}
+
+function selectDay(i) {
+  currentDay = i;
+  renderNav();
+  renderDay(i);
+}
+
+// Init — abre no dia atual da semana se possível
+const today = new Date().getDate();
+const todayIdx = DAYS.findIndex(d => d.date == today);
+currentDay = todayIdx >= 0 ? todayIdx : 0;
+
+renderNav();
+renderDay(currentDay);
+renderProgress();
+</script>
+</body>
+</html>
