@@ -1,0 +1,819 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><script data-od-sandbox-shim>(function(){
+  function makeStore(){
+    var data = {};
+    var api = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
+      setItem: function(k, v){ data[k] = String(v); },
+      removeItem: function(k){ delete data[k]; },
+      clear: function(){ data = {}; },
+      key: function(i){ return Object.keys(data)[i] || null; }
+    };
+    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(data).length; } });
+    return api;
+  }
+  function tryShim(name){
+    var works = false;
+    try { works = !!window[name] && typeof window[name].getItem === 'function'; void window[name].length; }
+    catch (_) { works = false; }
+    if (works) return;
+    try { Object.defineProperty(window, name, { configurable: true, value: makeStore() }); }
+    catch (_) { try { window[name] = makeStore(); } catch (__) {} }
+  }
+  tryShim('localStorage');
+  tryShim('sessionStorage');
+})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Cardápio Semanal · 08–14 Jun</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --leo: #1a5fa8;
+    --leo-light: #e8f1fb;
+    --leo-mid: #b8d2f0;
+    --lari: #9c3558;
+    --lari-light: #faeef3;
+    --lari-mid: #e8b4c8;
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e4de;
+    --text: #1a1714;
+    --muted: #7a746d;
+    --check: #2d9e6b;
+    --check-bg: #eaf5f0;
+    --amber: #c17d2a;
+    --amber-bg: #fdf3e3;
+    --rose: #c0303a;
+    --rose-bg: #fdedef;
+  }
+
+  *, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  button, input {
+    font-family: inherit;
+    touch-action: manipulation;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--text);
+    color: white;
+    padding: 2rem 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .header-title em {
+    font-style: italic;
+    opacity: 0.6;
+  }
+  .header-week {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* PERSONAS SELECTION */
+  .personas-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .persona-selector {
+    display: flex;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px;
+    border-radius: 100px;
+    gap: 4px;
+    align-self: flex-start;
+    width: 100%;
+    max-width: 400px;
+  }
+  .persona-select-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 4px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.6;
+    text-align: center;
+  }
+  .persona-select-btn.active {
+    background: white;
+    color: var(--text);
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* NEXT MEAL HERO CARD */
+  .next-meal-hero {
+    margin-top: 0.5rem;
+  }
+  .next-meal-hero .meal-card {
+    border: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+  .next-meal-hero .meal-header {
+    background: rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 16px;
+  }
+  .next-meal-hero .meal-time { color: rgba(255,255,255,0.6); }
+  .next-meal-hero .person-col { 
+    background: var(--surface); 
+    color: var(--text);
+    padding: 20px 16px;
+  }
+  
+  .next-meal-label-hero {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .next-meal-label-hero::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .progress-item { flex: 1; min-width: 130px; }
+  .progress-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .progress-fill.leo { background: #6aaff0; }
+  .progress-fill.lari { background: #e8a0b8; }
+
+  /* NAV DAYS - STICKY ON MOBILE */
+  .nav-wrap {
+    padding: 1rem 1.5rem 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .nav-wrap.scrolled {
+    border-bottom-color: var(--border);
+    background: rgba(250, 249, 247, 0.95);
+    backdrop-filter: blur(8px);
+  }
+  .nav-wrap::-webkit-scrollbar { display: none; }
+  .nav-days {
+    display: flex;
+    gap: 8px;
+    min-width: max-content;
+    padding-bottom: 4px;
+  }
+  .day-tab {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    color: var(--muted);
+    min-height: 44px; /* Touch target */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .day-tab.active {
+    background: var(--text);
+    border-color: var(--text);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .day-tab .day-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .day-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .day-dot.leo-done { background: var(--leo); }
+  .day-dot.lari-done { background: var(--lari); }
+  .day-tab.active .day-dot { background: rgba(255,255,255,0.2); }
+  .day-tab.active .day-dot.leo-done { background: #6aaff0; }
+  .day-tab.active .day-dot.lari-done { background: #e8a0b8; }
+
+  /* CONTENT */
+  .content {
+    padding: 1rem 1.5rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* MEAL CARD */
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .meal-card:active { transform: scale(0.995); }
+
+  .meal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.01);
+  }
+  .meal-icon {
+    font-size: 1.6rem;
+    width: 40px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .meal-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  .meal-time {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* PERSONS GRID */
+  .persons-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Stacked by default for mobile */
+  }
+  @media (min-width: 768px) {
+    .persons-grid.split { grid-template-columns: 1fr 1fr; }
+    .person-col:first-child { border-right: 1px solid var(--border); }
+  }
+
+  .person-col {
+    padding: 20px;
+  }
+  .person-col:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .person-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .person-label.leo { color: var(--leo); }
+  .person-label.lari { color: var(--lari); }
+  .person-label-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .leo .person-label-dot { background: var(--leo); }
+  .lari .person-label-dot { background: var(--lari); }
+
+  /* ITEMS */
+  .item-list { list-style: none; margin-bottom: 16px; }
+  .item-list li {
+    font-size: 0.95rem; /* Larger for mobile readability */
+    color: var(--text);
+    padding: 6px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+  .item-list li::before {
+    content: '•';
+    color: var(--border);
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-top: -1px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .badge.g { background: var(--check-bg); color: var(--check); }
+  .badge.a { background: var(--amber-bg); color: var(--amber); }
+  .badge.r { background: var(--rose-bg); color: var(--rose); }
+  .badge.p { background: #f0eafd; color: #6b3ab5; }
+  .badge.b { background: var(--leo-light); color: var(--leo); }
+
+  /* CUSTOM MEAL BOX */
+  .custom-meal-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .custom-meal-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .custom-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .custom-input-group label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .custom-input {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px; /* CRITICAL: Prevents iOS zoom */
+    width: 100%;
+    background: white;
+    -webkit-appearance: none;
+  }
+  .custom-input:focus {
+    outline: none;
+    border-color: var(--text);
+  }
+
+  /* CHECK BUTTON */
+  .check-wrap { margin-top: 16px; }
+  .check-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 48px; /* Touch target */
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .check-btn.done {
+    background: var(--check-bg);
+    border-color: var(--check);
+    color: var(--check);
+  }
+  .check-btn .check-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .check-btn.done .check-icon {
+    background: var(--check);
+    border-color: var(--check);
+    color: white;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0.5rem 1.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .footer-note strong { color: var(--text); }
+
+  @media (max-width: 480px) {
+    .header { padding: 1.5rem 1.25rem 1.5rem; }
+    .header-title { font-size: 1.8rem; }
+    .nav-wrap { padding: 0.75rem 1.25rem 0.5rem; }
+    .content { padding: 1rem 1.25rem 4rem; }
+    .day-tab { padding: 8px 14px; min-width: 70px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <h1 class="header-title">Cardápio<br><em>Semanal</em></h1>
+    <span class="header-week">08 – 14 Jun 2025</span>
+  </div>
+  
+  <div class="personas-header">
+    <div class="persona-selector">
+      <button class="persona-select-btn active" onclick="setPersona('both')" id="btn-p-both">Ambos</button>
+      <button class="persona-select-btn" onclick="setPersona('leo')" id="btn-p-leo">Leonardo</button>
+      <button class="persona-select-btn" onclick="setPersona('lari')" id="btn-p-lari">Larissa</button>
+    </div>
+
+    <div class="next-meal-hero" id="next-meal-hero-container">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Leonardo</span>
+        <span id="pct-leo">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill leo" id="bar-leo" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Larissa</span>
+        <span id="pct-lari">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill lari" id="bar-lari" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--leo)"></span> Leonardo</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--lari)"></span> Larissa</div>
+</div>
+
+<nav class="nav-wrap" id="nav-wrap">
+  <div class="nav-days" id="nav-days"></div>
+</nav>
+
+<main class="content" id="content"></main>
+
+<script>
+const DAYS = [
+  { label: 'Seg', date: '08', full: 'Segunda · 08 Jun' },
+  { label: 'Ter', date: '09', full: 'Terça · 09 Jun' },
+  { label: 'Qua', date: '10', full: 'Quarta · 10 Jun' },
+  { label: 'Qui', date: '11', full: 'Quinta · 11 Jun' },
+  { label: 'Sex', date: '12', full: 'Sexta · 12 Jun' },
+  { label: 'Sáb', date: '13', full: 'Sábado · 13 Jun' },
+  { label: 'Dom', date: '14', full: 'Domingo · 14 Jun' },
+];
+
+const MEALS = [
+  {
+    id: 'cafe', icon: '☀️', name: 'Café da manhã', time: '~7h · Diário', hour: 7, min: 0,
+    leo: { items: ['Overnight: iogurte + aveia + chia', 'Banana fatiada', 'Laranja ou Mexirica', { text: 'Creatina', badge: 'a', badgeText: 'manter' }, { text: 'Café preto', badge: 'b', badgeText: '9h–11h' }] },
+    lari: { items: ['2 torradas integrais', 'Queijo Minas fatiado', 'Tomate cereja', { text: 'Café com leite', badge: 'a', badgeText: 'moderação' }, { text: 'Laranja ou Mexirica', badge: 'g', badgeText: 'vitamina C' }] }
+  },
+  {
+    id: 'almoco', icon: '🍝', name: 'Almoço', time: '~12h · Molho em lote', hour: 12, min: 0,
+    leo: { items: ['Macarrão + carne moída', 'Salada completa', 'Fio de azeite'] },
+    lari: { items: [{ text: 'Macarrão + carne moída', badge: 'r', badgeText: 'sem cebola' }, 'Salada completa', 'Fio de azeite'] }
+  },
+  {
+    id: 'lanche-tarde', icon: '🥚', name: 'Lanche da tarde', time: '~15h30', hour: 15, min: 30,
+    leo: { items: ['Torrada integral + queijo Minas', { text: '1 ovo cozido', badge: 'b', badgeText: 'energia' }, 'Amendoim', { text: 'Creatina', badge: 'a', badgeText: 'manter' }] },
+    lari: { items: ['Torrada integral + queijo Minas', { text: '1–2 ovos cozidos', badge: 'g', badgeText: 'colina' }, { text: 'Pera', badge: 'g', badgeText: 'digestão' }, { text: 'Iogurte', badge: 'g', badgeText: 'galactogênico' }] }
+  },
+  {
+    id: 'lanche-noite', icon: '🌙', name: 'Lanche da noite', time: '~20h', hour: 20, min: 0,
+    leo: { items: ['Pão integral + manteiga', { text: 'Ovo cozido/mexido', badge: 'b', badgeText: 'proteína' }, 'Uva ou maçã'] },
+    lari: { items: ['Pão integral + manteiga', { text: 'Ovo cozido/mexido', badge: 'b', badgeText: 'proteína' }, { text: 'Chá de erva-doce/camomila', badge: 'g', badgeText: 'anti-cólica' }] }
+  }
+];
+
+let state = {};
+try { state = JSON.parse(localStorage.getItem('cardapio-state') || '{}'); } catch(e) {}
+
+function save() {
+  try { localStorage.setItem('cardapio-state', JSON.stringify(state)); } catch(e) {}
+}
+
+function key(dayIdx, mealId, person) { return `${dayIdx}-${mealId}-${person}`; }
+
+function renderItems(items) {
+  return items.map(item => {
+    if (typeof item === 'string') return `<li>${item}</li>`;
+    const badge = `<span class="badge ${item.badge}">${item.badgeText}</span>`;
+    return `<li>${item.text}${badge}</li>`;
+  }).join('');
+}
+
+function renderPersonCol(dayIdx, meal, person) {
+  const isWeekendNight = (dayIdx >= 4) && (meal.id === 'lanche-noite');
+  const k = key(dayIdx, meal.id, person);
+  const label = person === 'leo' ? 'Leonardo' : 'Larissa';
+  const items = isWeekendNight ? '<li><strong>Livre</strong></li>' : renderItems(meal[person].items);
+  
+  return `
+    <div class="person-col">
+      <div class="person-label ${person}">
+        <span class="person-label-dot"></span>${label}
+      </div>
+      <ul class="item-list">${items}</ul>
+      
+      <div class="custom-meal-box">
+        <div class="custom-meal-title">Comi outra coisa?</div>
+        <div class="custom-inputs">
+          <div class="custom-input-group">
+            <label>O que comi</label>
+            <input type="text" class="custom-input" 
+              data-meal-key="${k}-food"
+              value="${state[k + '-food'] || ''}" 
+              oninput="updateCustom(${dayIdx}, '${meal.id}', '${person}', 'food', this.value)"
+              placeholder="Ex: Pizza, Sushi...">
+          </div>
+          <div class="custom-input-group">
+            <label>Quantidade</label>
+            <input type="text" class="custom-input" 
+              data-meal-key="${k}-qty"
+              value="${state[k + '-qty'] || ''}" 
+              oninput="updateCustom(${dayIdx}, '${meal.id}', '${person}', 'qty', this.value)"
+              placeholder="Ex: 2 fatias...">
+          </div>
+        </div>
+      </div>
+
+      <div class="check-wrap">
+        <button class="check-btn ${state[k] ? 'done' : ''}" data-check-key="${k}"
+          onclick="toggleCheck(${dayIdx}, '${meal.id}', '${person}')">
+          <span class="check-icon">${state[k] ? '✓' : ''}</span>
+          <span class="check-label">${state[k] ? 'Realizada' : 'Marcar como feito'}</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+let currentDay = 0;
+let activePersona = 'both';
+
+function renderNav() {
+  const nav = document.getElementById('nav-days');
+  nav.innerHTML = DAYS.map((d, i) => {
+    const dots = MEALS.map((m, mi) => {
+      const ld = state[key(i, m.id, 'leo')] ? 'leo-done' : '';
+      const rd = state[key(i, m.id, 'lari')] ? 'lari-done' : '';
+      return `<span class="day-dot ${ld}"></span><span class="day-dot ${rd}"></span>`;
+    }).join('');
+    return `
+      <button class="day-tab ${i === currentDay ? 'active' : ''}" onclick="selectDay(${i})">
+        ${d.label} ${d.date}
+        <div class="day-dots">${dots}</div>
+      </button>`;
+  }).join('');
+}
+
+function renderProgress() {
+  const total = DAYS.length * MEALS.length;
+  let leo = 0, lari = 0;
+  DAYS.forEach((_, i) => {
+    MEALS.forEach(m => {
+      if (state[key(i, m.id, 'leo')]) leo++;
+      if (state[key(i, m.id, 'lari')]) lari++;
+    });
+  });
+  document.getElementById('bar-leo').style.width = Math.round((leo / total) * 100) + '%';
+  document.getElementById('pct-leo').textContent = Math.round((leo / total) * 100) + '%';
+  document.getElementById('bar-lari').style.width = Math.round((lari / total) * 100) + '%';
+  document.getElementById('pct-lari').textContent = Math.round((lari / total) * 100) + '%';
+}
+
+function toggleCheck(dayIdx, mealId, person) {
+  const k = key(dayIdx, mealId, person);
+  state[k] = !state[k];
+  save();
+  document.querySelectorAll(`[data-check-key="${k}"]`).forEach(btn => {
+    btn.classList.toggle('done', state[k]);
+    btn.querySelector('.check-icon').textContent = state[k] ? '✓' : '';
+    btn.querySelector('.check-label').textContent = state[k] ? 'Realizada' : 'Marcar como feito';
+  });
+  renderNav();
+  renderProgress();
+}
+
+function updateCustom(dayIdx, mealId, person, field, value) {
+  const k = key(dayIdx, mealId, person) + '-' + field;
+  state[k] = value;
+  save();
+  document.querySelectorAll(`[data-meal-key="${k}"]`).forEach(input => {
+    if (input.value !== value) input.value = value;
+  });
+}
+
+function setPersona(p) {
+  activePersona = p;
+  document.querySelectorAll('.persona-select-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`btn-p-${p}`).classList.add('active');
+  renderDay(currentDay);
+  updateNextMeal();
+}
+
+function renderDay(dayIdx) {
+  const content = document.getElementById('content');
+  const showLeo = activePersona === 'both' || activePersona === 'leo';
+  const showLari = activePersona === 'both' || activePersona === 'lari';
+  const gridClass = activePersona === 'both' ? 'split' : '';
+
+  content.innerHTML = `
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1.5rem;color:var(--muted);font-weight:400;">
+      ${DAYS[dayIdx].full}
+    </h2>
+    ${MEALS.map(meal => `
+      <div class="meal-card">
+        <div class="meal-header">
+          <span class="meal-icon">${meal.icon}</span>
+          <div class="meal-info">
+            <div class="meal-name">${meal.name}</div>
+            <div class="meal-time">${meal.time}</div>
+          </div>
+        </div>
+        <div class="persons-grid ${gridClass}">
+          ${showLeo ? renderPersonCol(dayIdx, meal, 'leo') : ''}
+          ${showLari ? renderPersonCol(dayIdx, meal, 'lari') : ''}
+        </div>
+      </div>
+    `).join('')}
+    <div class="footer-note">
+      👩‍⚕️ <strong>Larissa:</strong> 2,5L água/dia · erva-doce para cólicas.<br>
+      ⚡ <strong>Leonardo:</strong> Café 9h–11h e 13h–15h.
+    </div>
+  `;
+}
+
+function updateNextMeal() {
+  const container = document.getElementById('next-meal-hero-container');
+  if (activePersona === 'both') { container.innerHTML = ''; return; }
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  const todayDate = now.getDate();
+  let dayIdx = DAYS.findIndex(d => d.date == todayDate);
+  if (dayIdx === -1) dayIdx = 0;
+  let nextMeal = MEALS.find(m => (m.hour * 60 + m.min) > currentTime);
+  let targetDayIdx = dayIdx;
+  if (!nextMeal) { targetDayIdx = (dayIdx + 1) % 7; nextMeal = MEALS[0]; }
+
+  container.innerHTML = `
+    <div class="next-meal-label-hero">Próxima Refeição · ${DAYS[targetDayIdx].label}</div>
+    <div class="meal-card" style="margin-bottom:0">
+      <div class="meal-header">
+        <span class="meal-icon">${nextMeal.icon}</span>
+        <div class="meal-info">
+          <div class="meal-name">${nextMeal.name}</div>
+          <div class="meal-time">${nextMeal.time}</div>
+        </div>
+      </div>
+      <div class="persons-grid">
+        ${renderPersonCol(targetDayIdx, nextMeal, activePersona)}
+      </div>
+    </div>
+  `;
+}
+
+function selectDay(i) {
+  currentDay = i;
+  renderNav();
+  renderDay(i);
+  window.scrollTo({ top: document.getElementById('nav-wrap').offsetTop - 20, behavior: 'smooth' });
+}
+
+// Scroll indicator for nav
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav-wrap');
+  if (window.scrollY > 150) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// Init
+const today = new Date().getDate();
+const todayIdx = DAYS.findIndex(d => d.date == today);
+currentDay = todayIdx >= 0 ? todayIdx : 0;
+renderNav();
+renderDay(currentDay);
+renderProgress();
+updateNextMeal();
+setInterval(updateNextMeal, 60000);
+</script>
+</body>
+</html>
